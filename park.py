@@ -21,6 +21,7 @@ elif start_hour == 9:
 else:
     raise ValueError("시작 시간은 8 또는 9만 입력 가능합니다.")
 비고내용 = "육전 연결 중,"
+작성자내용 = "경장 박명수"
 
 # 각 열 데이터 구성
 rows = []
@@ -33,7 +34,8 @@ for hour in range(start_hour, end_hour + 1):
         "분": 0,
         "합정연혁 포함여부": "N",
         "기사제목": "",
-        "기사내용": 비고내용
+        "기사내용": 비고내용,
+        "작성자": 작성자내용
     }
     rows.append(row)
 
@@ -41,10 +43,9 @@ for hour in range(start_hour, end_hour + 1):
 df = pd.DataFrame(rows)
 
 # 컬럼 순서 조정
-columns = ["요목 구분1", "요목 구분2", "일자", "시", "분", "합정연혁 포함여부", "기사제목", "기사내용"]
+columns = ["요목 구분1", "요목 구분2", "일자", "시", "분", "합정연혁 포함여부", "기사제목", "기사내용", "작성자"]
 df = df[columns]
 
-# 작성자 정보 추가 (엑셀 오른쪽 하단 셀)
 author_row = pd.DataFrame([{col: "육전 연결 중," if col == "기사내용" else "" for col in columns}])
 df = pd.concat([df, author_row], ignore_index=True)
 
@@ -65,6 +66,7 @@ ws.merge_cells("C1:E2")
 ws.merge_cells("F1:F3")  # 합정연혁 포함여부
 ws.merge_cells("G1:G3")  # 기사제목
 ws.merge_cells("H1:H3")  # 기사내용
+ws.merge_cells("I1:I3")  # 작성자
 
 ws.merge_cells("A3")  # 요목 구분1
 ws.merge_cells("B3")  # 요목 구분2
@@ -100,9 +102,11 @@ ws["F1"] = "함정연혁 포함여부"
 ws["G1"] = "기사제목"
 ws["H1"] = "기사내용"
 ws["H1"].comment = Comment("필수 입력 항목입니다.", "System")
+ws["I1"] = "작성자"
+ws["I1"].comment = Comment("필수 입력 항목입니다.", "System")
 
 # 스타일 지정
-for col in ["A", "B", "F", "G", "H"]:
+for col in ["A", "B", "F", "G", "H", "I"]:
     for row in range(1, 4):
         ws[f"{col}{row}"].fill = fill_color
         ws[f"{col}{row}"].alignment = Alignment(horizontal="center", vertical="center")
@@ -132,6 +136,7 @@ ws["E1"].border = thin_border
 ws["F1"].border = thin_border
 ws["G1"].border = thin_border
 ws["H1"].border = thin_border
+ws["I1"].border = thin_border
 
 
 # 컬럼 너비 직접 지정
@@ -143,10 +148,7 @@ ws.column_dimensions["E"].width = 5   # 분
 ws.column_dimensions["F"].width = 20  # 함정연혁 포함여부
 ws.column_dimensions["G"].width = 20  # 기사제목
 ws.column_dimensions["H"].width = 100  # 기사내용
-
-
-# I30 셀에 "박명수" 입력
-ws["I30"] = "박명수"
+ws.column_dimensions["I"].width = 15  # 기사내용
 
 wb.save(output_path)
 
