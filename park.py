@@ -5,6 +5,8 @@ from openpyxl.styles import PatternFill, Alignment
 from openpyxl.styles import Border, Side
 from openpyxl.cell.cell import MergedCell
 
+# 수정가능
+
 # 입력 값
 user_input = input("날짜를 입력하세요 (예: 2025-08-12, 생략 시 오늘 날짜): ").strip()
 try:
